@@ -1,0 +1,18 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="giftcard_listing_data_source" xsi:type="string">HelloWorldVirtualType</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="HelloWorldVirtualType" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">mageplaza_simple_gift_card</argument>
+            <argument name="resourceModel" xsi:type="string">Mageplaza\SimpleGiftCard\Model\ResourceModel\GiftCard</argument>
+        </arguments>
+    </virtualType>
+<!--    <type name="Magento\HelloWorld\Controller\ControllerIndex\Example">-->
+<!--        <plugin name="Magento_HelloWorld_Plugin" type="Magento\HelloWorld\Plugin\ExamplePlugin" sortOrder="10" disabled="false"  />-->
+<!--    </type>-->
+</config>

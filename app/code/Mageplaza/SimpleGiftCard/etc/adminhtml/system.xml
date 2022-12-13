@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="mageplaza_extension" translate="label" sortOrder="1">
+            <label>MAGEPLAZA EXTENSIONS</label>
+        </tab>
+        <section id="gift_card" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Gift Card</label>
+            <tab>mageplaza_extension</tab>
+            <resource>Mageplaza_SimpleGiftCard::mageplaza_configuration</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>General Configuration</label>
+                <field id="gift_card_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Enable Gift Card</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="allow_use_checkout_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <label>Allow used Gift Card at checkout</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Set default shipping method in the checkout process.</comment>
+                    <depends>
+                        <field id="gift_card_enable">1</field>
+                    </depends>
+                </field>
+                <field id="allow_redeem_gift_card_enable" translate="label" type="select" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Allow redeem Gift Card</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Set default payment method in the checkout process.</comment>
+                    <depends>
+                        <field id="gift_card_enable">1</field>
+                    </depends>
+                </field>
+
+            </group>
+
+            <group id="code" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Code Configuration</label>
+                <field id="code_length" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0"
+                       showInStore="0" canRestore="1">
+                    <label>Code length</label>
+                    <validate> integer required-entry validate-greater-than-zero validate-length maximum-length-12</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

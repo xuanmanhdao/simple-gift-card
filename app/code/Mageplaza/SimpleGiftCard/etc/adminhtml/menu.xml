@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Mageplaza_SimpleGiftCard::sub_menu_mageplaza" title="Mageplaza" module="Mageplaza_SimpleGiftCard" sortOrder="51" resource="Mageplaza_SimpleGiftCard::sub_menu_mageplaza"/>
+
+
+        <add id="Mageplaza_SimpleGiftCard::sub_title_menu_mageplaza"
+             title="Gift Card" module="Mageplaza_SimpleGiftCard" resource="Mageplaza_SimpleGiftCard::mageplaza_manage_code"
+             sortOrder="1" parent="Mageplaza_SimpleGiftCard::sub_menu_mageplaza" />
+
+        <add id="Mageplaza_SimpleGiftCard::mageplaza_manage_code" title="Test CRUD" module="Mageplaza_SimpleGiftCard" sortOrder="2" action="admin-simple-gift-card/controllertestaction/actiontest" resource="Mageplaza_SimpleGiftCard::mageplaza_manage_code" parent="Mageplaza_SimpleGiftCard::sub_menu_mageplaza"/>
+
+        <add id="Mageplaza_SimpleGiftCard::mageplaza_manage_code_crud" title="Manage Code" module="Mageplaza_SimpleGiftCard" sortOrder="3" action="admin-simple-gift-card/code/index" resource="Mageplaza_SimpleGiftCard::mageplaza_manage_code_crud" parent="Mageplaza_SimpleGiftCard::sub_menu_mageplaza"/>
+
+        <add id="Mageplaza_SimpleGiftCard::mageplaza_configuration" title="Configuration" module="Mageplaza_SimpleGiftCard" sortOrder="4" action="adminhtml/system_config/edit/section/gift_card" resource="Mageplaza_SimpleGiftCard::mageplaza_configuration" parent="Mageplaza_SimpleGiftCard::sub_menu_mageplaza"/>
+    </menu>
+</config>
