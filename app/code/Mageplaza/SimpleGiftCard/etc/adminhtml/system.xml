@@ -45,7 +45,7 @@
                 <field id="code_length" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0"
                        showInStore="0" canRestore="1">
                     <label>Code length</label>
-                    <validate> integer required-entry validate-greater-than-zero validate-length maximum-length-12</validate>
+                    <validate>integer required-entry validate-greater-than-zero validate-length maximum-length-12 no-whitespace</validate>
                 </field>
             </group>
         </section>

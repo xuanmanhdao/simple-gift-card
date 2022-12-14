@@ -22,9 +22,9 @@ class ActionTest extends \Magento\Framework\App\Action\Action
         $giftCard = $this->_giftCardFactory->create();
             echo "</br>" . "Hello admin! LOL";
         $data = [
-            'code' => "Test1234131",
+            'code' => "NayNAyNay",
             'balance' => 100000.0000,
-            'amount_used' => 0,
+            'amount_used' => 42.000,
             'create_from' => 'admin',
         ];
 

@@ -23,7 +23,7 @@
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
-        <filterSearch name="fulltext"/>
+<!--        <filterSearch name="fulltext"/>-->
         <filters name="listing_filters"/>
         <paging name="listing_paging"/>
         <exportButton name="export_button"/>
@@ -39,7 +39,7 @@
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">delete</item>
                         <item name="label" xsi:type="string" translate="true">Delete</item>
-                        <item name="url" xsi:type="url" path="admin-simple-gift-card/code/delete"/>
+                        <item name="url" xsi:type="url" path="admin-simple-gift-card/code/massdelete"/>
                         <item name="confirm" xsi:type="array">
                             <item name="title" xsi:type="string" translate="true">Delete Gift Card</item>
                             <item name="message" xsi:type="string" translate="true">Are you sure you wan't to delete
@@ -83,7 +83,7 @@
         <column name="giftcard_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="filter" xsi:type="string">text</item>
                     <item name="sorting" xsi:type="string">asc</item>
                     <item name="label" xsi:type="string" translate="true">ID</item>
                 </item>
@@ -92,13 +92,13 @@
         <column name="code">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="filter" xsi:type="string">text</item>
                     <item name="sorting" xsi:type="string">asc</item>
                     <item name="label" xsi:type="string" translate="true">Gift Code</item>
                 </item>
             </argument>
         </column>
-        <column name="balance">
+        <column name="balance" class="Mageplaza\SimpleGiftCard\Ui\Component\Custom\Columns\Blance">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
@@ -112,7 +112,7 @@
                 </item>
             </argument>
         </column>
-        <column name="amount_used">
+        <column name="amount_used" class="Mageplaza\SimpleGiftCard\Ui\Component\Custom\Columns\AmountUsed">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>

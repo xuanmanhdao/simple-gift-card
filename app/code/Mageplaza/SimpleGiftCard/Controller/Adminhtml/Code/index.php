@@ -1,6 +1,6 @@
 <?php
 
-namespace Mageplaza\SimpleGiftCard\Controller\Adminhtml\code;
+namespace Mageplaza\SimpleGiftCard\Controller\Adminhtml\Code;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -18,6 +18,7 @@ class index extends Action
 
     public function execute()
     {
+
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->prepend((__('Gift Cards')));
 
