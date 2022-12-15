@@ -7,16 +7,15 @@ class Code extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 //    public $collection;
     protected $_scopeConfig;
+
     public function __construct(
-        \Magento\Backend\Block\Template\Context                                  $context,
-        \Magento\Framework\Registry                                              $registry,
-        \Magento\Framework\Data\FormFactory                                      $formFactory,
-//        \Mageplaza\SimpleGiftCard\Model\ResourceModel\GiftCard\CollectionFactory $collectionFactory,
+        \Magento\Backend\Block\Template\Context            $context,
+        \Magento\Framework\Registry                        $registry,
+        \Magento\Framework\Data\FormFactory                $formFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        array                                                                    $data = []
+        array                                              $data = []
     )
     {
-//        $this->collection = $collectionFactory;
 
         $this->_scopeConfig = $scopeConfig;
         parent::__construct($context, $registry, $formFactory, $data);
@@ -25,37 +24,60 @@ class Code extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
     protected function _prepareForm()
     {
-//        /** @var $model \Mageplaza\SimpleGiftCard\Model\GiftFactory */
-//        $model = $this->_coreRegistry->registry('mageplaza_simple_gift_card');
+        /** @var $model \Mageplaza\SimpleGiftCard\Model\GiftCard */
+        $model = $this->_coreRegistry->registry('mageplaza_simple_gift_card');
+//        dd($model->getData());
 
         $form = $this->_formFactory->create();
-//        $collection = $this->collection->create();
-//        if ($collection->count()) {
-//            foreach ($collection as $item) {
-//                echo $item->getId();
-//            }
-//        }
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Gift Card Information')]);
-        $fieldset->addField('code_length', 'text', [
-            'name' => 'code_length',
-            'label' => __('Code Length'),
-            'title' => __('Code Length'),
-            'value'    => $this->_scopeConfig->getValue(
-                'gift_card/code/code_length',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            ),
-            'class' => 'integer required-entry validate-greater-than-zero validate-length maximum-length-12 no-whitespace',
-        ]);
-        $fieldset->addField('balance', 'text', [
-            'name' => 'balance',
-            'label' => __('Balance'),
-            'title' => __('Balance'),
-            'class' => 'required-entry validate-zero-or-greater no-whitespace integer',
-            'required' => true
-        ]);
+        if (!$model->getId()) {
+            $fieldset->addField('code_length', 'text', [
+                'name' => 'code_length',
+                'label' => __('Code Length'),
+                'title' => __('Code Length'),
+                'value' => $this->_scopeConfig->getValue(
+                    'gift_card/code/code_length',
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                ),
+                'class' => 'integer required-entry validate-greater-than-zero validate-length maximum-length-12 no-whitespace',
+            ]);
+            $fieldset->addField('balance', 'text', [
+                'name' => 'balance',
+                'label' => __('Balance'),
+                'title' => __('Balance'),
+                'class' => 'required-entry validate-zero-or-greater no-whitespace',
+                'required' => true
+            ]);
+        } else {
+            $fieldset->addField('code', 'text', [
+                'name' => 'code',
+                'label' => __('Code'),
+                'title' => __('Code'),
+                'readonly' => true,
+                'required' => true
+            ]);
+            $fieldset->addField('balance', 'text', [
+                'name' => 'balance',
+                'label' => __('Balance'),
+                'title' => __('Balance'),
+                'class' => 'required-entry validate-zero-or-greater no-whitespace',
+                'required' => true
+            ]);
+            $fieldset->addField('create_from', 'text', [
+                'name' => 'create_from',
+                'label' => __('Create From'),
+                'title' => __('Create From'),
+                'readonly' => true,
+                'required' => true
+            ]);
+        }
 
-//        $data = $model->getData();
-//        $form->setValues($data);
+
+        if ($model->getId()) {
+            $data = $model->getData();
+            $form->setValues($data);
+        }
+
         $this->setForm($form);
         return parent::_prepareForm();
     }

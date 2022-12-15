@@ -2,6 +2,8 @@
 
 namespace Mageplaza\SimpleGiftCard\Block\Adminhtml\Code;
 
+use Mageplaza\SimpleGiftCard\Model\GiftCard;
+
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
     protected $_coreRegistry;
@@ -50,7 +52,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     }
 
     /**
-     * Retrieve text for header element depending on loaded news
+     * Retrieve text for header element depending on loaded gift card
      *
      * @return string
      */
@@ -65,6 +67,18 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         }
     }
 
+    public function getFormActionUrl()
+    {
+        /** @var GiftCard $giftCard */
+        $giftCard = $this->_coreRegistry->registry('mageplaza_simple_gift_card');
+        if ($giftCard->getId()) {
+            $ar = ['id' => $giftCard->getId()];
+
+            return $this->getUrl('*/*/save', $ar);
+        }
+
+        return parent::getFormActionUrl();
+    }
 
 
 }

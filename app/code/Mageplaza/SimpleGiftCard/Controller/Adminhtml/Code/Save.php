@@ -28,41 +28,56 @@ class Save extends Action
     {
 
         try {
-            $objectRequest = $this->getRequest()->getPost();
+            $paramID = (int)$this->getRequest()->getParam('id');
+//            dd($paramID);
+            if (!$paramID) {
+                $objectRequest = $this->getRequest()->getPost();
 //            $data = (array)$objectRequest;
+                if ($objectRequest) {
+                    $codeLength = $objectRequest->code_length;
+                    function getGiftCode($valueCodeLength)
+                    {
+                        $characters = 'ABCDEFGHIJKLMLOPQRSTUVXYZ0123456789';
+                        $randomString = '';
 
-            if ($objectRequest) {
-                $codeLength = $objectRequest->code_length;
-                function getGiftCode($valueCodeLength)
-                {
-                    $characters = 'ABCDEFGHIJKLMLOPQRSTUVXYZ0123456789';
-                    $randomString = '';
+                        for ($i = 0; $i < $valueCodeLength; $i++) {
+                            $index = rand(0, strlen($characters) - 1);
+                            $randomString .= $characters[$index];
+                        }
 
-                    for ($i = 0; $i < $valueCodeLength; $i++) {
-                        $index = rand(0, strlen($characters) - 1);
-                        $randomString .= $characters[$index];
+                        return $randomString;
                     }
 
-                    return $randomString;
+                    $giftCode = getGiftCode($codeLength);
+
+                    $create_from = 'admin';
+                    $amount_used = 0;
+
+                    $model = $this->giftCardFactory->create();
+                    $model->setData('code', $giftCode);
+                    $model->setData('balance', $objectRequest->balance);
+                    $model->setData('amount_used', $amount_used);
+                    $model->setData('create_from', $create_from);
+                    $model->save();
+
+                    $this->messageManager->addSuccessMessage(__("Data Saved Successfully."));
                 }
-
-                $giftCode = getGiftCode($codeLength);
-
-                $create_from = 'admin';
-                $amount_used = 0;
-
+            } else {
                 $model = $this->giftCardFactory->create();
-                $model->setData('code', $giftCode);
-                $model->setData('balance', $objectRequest->balance);
-                $model->setData('amount_used', $amount_used);
-                $model->setData('create_from', $create_from);
-                $model->save();
-
-                $this->messageManager->addSuccessMessage(__("Data Saved Successfully."));
+                $dataByID = $model->load($paramID);
+                if ($dataByID->getData('giftcard_id')) {
+                    $objectRequest = $this->getRequest()->getPost();
+                    $dataByID->setBalance($objectRequest->balance)->save();
+                    $this->messageManager->addSuccessMessage(__("Data Changed Successfully."));
+                } else {
+                    $this->messageManager->addErrorMessage(__("Data Changed Error."));
+                }
             }
+
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage($e, __("We can\'t submit your request, Please try again."));
         }
+
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());
         return $resultRedirect;
