@@ -31,6 +31,106 @@ class UpgradeSchema implements UpgradeSchemaInterface
             }
         }
 
+        if (version_compare($context->getVersion(), '2.0.0', '<')) {
+            if (!$installer->tableExists('mageplaza_giftcard_history')) {
+                $table = $installer->getConnection()->newTable(
+                    $installer->getTable('mageplaza_giftcard_history')
+                )
+                    ->addColumn(
+                        'history_id',
+                        \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                        null,
+                        [
+                            'identity' => true,
+                            'nullable' => false,
+                            'primary' => true,
+                            'unsigned' => true,
+                        ],
+                        'Gift Card History ID'
+                    )
+                    ->addColumn(
+                        'giftcard_id',
+                        \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                        null,
+                        [
+                            'nullable' => false,
+                            'unsigned' => true,
+                        ],
+                        'Gift Card ID Foreign Key'
+                    )
+                    ->addForeignKey(
+                        $installer->getFkName(
+                            'mageplaza_giftcard_history',
+                            'giftcard_id',
+                            'mageplaza_simple_gift_card',
+                            'giftcard_id'
+                        ),
+                        'giftcard_id',
+                        $installer->getTable('mageplaza_simple_gift_card'),
+                        'giftcard_id',
+                        \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+                    )
+                    ->addColumn(
+                        'customer_id',
+                        \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                        null,
+                        [
+                            'nullable' => false,
+                            'unsigned' => true,
+                        ],
+                        'Customer ID Foreign Key'
+                    )
+                    ->addForeignKey(
+                        $installer->getFkName(
+                            'mageplaza_giftcard_history',
+                            'customer_id',
+                            'customer_entity',
+                            'entity_id'
+                        ),
+                        'customer_id',
+                        $installer->getTable('customer_entity'),
+                        'entity_id',
+                        \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+                    )
+                    ->addColumn(
+                        'amount',
+                        \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                        ['length' => 12, 4],
+                        ['nullable' => false, 'default' => 0],
+                        'Amount Changed'
+                    )
+                    ->addColumn(
+                        'action',
+                        \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        255,
+                        ['nullable' => false, 'default' => null],
+                        'Action Taken'
+                    )
+                    ->addColumn(
+                        'action_time',
+                        \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+                        null,
+                        ['nullable' => false, 'default' => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT_UPDATE],
+                        'Action Taken Time'
+                    );
+                $installer->getConnection()->createTable($table);
+            }
+
+            if ($installer->tableExists('customer_entity')) {
+                $installer->getConnection()->addColumn(
+                    $installer->getTable('customer_entity'),
+                    'giftcard_balance',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                        'length' => '12, 4',
+                        'nullable' => false,
+                        'default' => 0,
+                        'comment' => 'Gift Card Balance of Customer'
+                    ]
+                );
+            }
+        }
+
         $installer->endSetup();
     }
 }

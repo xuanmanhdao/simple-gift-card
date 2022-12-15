@@ -45,7 +45,7 @@ class Code extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'balance',
                 'label' => __('Balance'),
                 'title' => __('Balance'),
-                'class' => 'required-entry validate-zero-or-greater no-whitespace',
+                'class' => 'required-entry validate-number validate-zero-or-greater no-whitespace',
                 'required' => true
             ]);
         } else {
@@ -60,7 +60,7 @@ class Code extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'balance',
                 'label' => __('Balance'),
                 'title' => __('Balance'),
-                'class' => 'required-entry validate-zero-or-greater no-whitespace',
+                'class' => 'required-entry validate-number validate-zero-or-greater no-whitespace',
                 'required' => true
             ]);
             $fieldset->addField('create_from', 'text', [

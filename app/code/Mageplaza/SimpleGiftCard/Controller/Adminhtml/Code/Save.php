@@ -61,6 +61,8 @@ class Save extends Action
                     $model->save();
 
                     $this->messageManager->addSuccessMessage(__("Data Saved Successfully."));
+
+                    $this->_redirect('admin-simple-gift-card/code/index');
                 }
             } else {
                 $model = $this->giftCardFactory->create();
@@ -69,6 +71,11 @@ class Save extends Action
                     $objectRequest = $this->getRequest()->getPost();
                     $dataByID->setBalance($objectRequest->balance)->save();
                     $this->messageManager->addSuccessMessage(__("Data Changed Successfully."));
+
+                    $this->_redirect('admin-simple-gift-card/code/index');
+//                    $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+//                    $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+//                    return $resultRedirect;
                 } else {
                     $this->messageManager->addErrorMessage(__("Data Changed Error."));
                 }
@@ -78,9 +85,9 @@ class Save extends Action
             $this->messageManager->addErrorMessage($e, __("We can\'t submit your request, Please try again."));
         }
 
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
-        return $resultRedirect;
+//        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+//        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+//        return $resultRedirect;
 
     }
 }
