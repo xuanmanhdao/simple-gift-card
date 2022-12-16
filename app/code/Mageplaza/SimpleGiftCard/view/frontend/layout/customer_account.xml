@@ -1,0 +1,17 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_account_navigation">
+<!--            Magento\Framework\View\Element\Html\Link\Current-->
+<!--            Magento\Customer\Block\Account\SortLinkInterface-->
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="customer-account-navigation-custom">
+                <arguments>
+                    <argument name="path" xsi:type="string">myidcustomer/giftcardhistory/index</argument>
+                    <argument name="label" xsi:type="string">My Gift Card</argument>
+<!--                    <argument name="sortOrder" xsi:type="number">209</argument>-->
+                </arguments>
+            </block>
+        </referenceBlock>
+<!--        &lt;!&ndash; eg. "My Wish List" move after "My Orders" &ndash;&gt;-->
+<!--        <move element="customer-account-navigation-custom" destination="customer_account_navigation" after="customer-account-navigation-wish-list-link" />-->
+    </body>
+</page>

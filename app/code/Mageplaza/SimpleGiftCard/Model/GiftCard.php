@@ -10,6 +10,4 @@ class GiftCard extends \Magento\Framework\Model\AbstractModel
     public function testABCD($value){
         return "Day la ham test ABCD o model GiftCard. Ban truyen vao value: $value";
     }
-
-
 }

@@ -1,0 +1,111 @@
+<?php $_giftCardHistorys = $block->getListGiftCardHistory();
+//dd($_giftCardHistorys);
+?>
+<style>
+    .giftcard-heading {
+        padding-top: 30px;
+    }
+
+    .action-container {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 100px;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background: #1979c3;
+        border: 1px solid #1979c3;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 7px 15px;
+        font-size: 1.4rem;
+        box-sizing: border-box;
+        vertical-align: middle;
+    }
+
+    .giftcard-table-caption {
+        font-size: 2.1rem;
+        font-weight: 300;
+    }
+
+    #giftcard-table {
+        border-collapse: collapse;
+        width: 100%;
+        border-top: 1px solid #DDD;
+    }
+
+    #giftcard-table th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #DDD;
+    }
+
+    #giftcard-table tr:hover {
+        background-color: #D6EEEE;
+    }
+</style>
+
+<h2 class="giftcard-heading"> Gift Card Information </h2>
+<hr>
+
+<div class="action-container">
+    <div>
+        <p class="font-weight-bold">Balance</p>
+        <p>$350</p>
+    </div>
+    <div>
+        <p class="font-weight-bold">Redeem</p>
+        <div>
+            <form action="" method="post" class="form-container">
+                <input type="text" name="" id="" placeholder="Enter gift card code">
+                <button class="btn-primary" type="submit">Redeem</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <p class="giftcard-table-caption">History</p>
+    <table id="giftcard-table">
+        <thead>
+        <tr>
+            <th scope="col" class="col title">Date</th>
+            <th scope="col" class="col title">Code</th>
+            <th scope="col" class="col title">Amount</th>
+            <th scope="col" class="col title">Action</th>
+        </tr>
+        </thead>
+        <?php if (count($_giftCardHistorys)): ?>
+            <tbody>
+            <?php foreach ($_giftCardHistorys as $_giftCardHistory): ?>
+                <tr>
+                    <td class="col title">
+                        <?php echo $_giftCardHistory['action_time']; ?>
+                    </td>
+                    <td class="col title">
+                        <?php echo $block->getCodeById($_giftCardHistory['giftcard_id'])['code']; ?>
+                    </td>
+                    <td class="col title">
+                        <?php echo $_giftCardHistory['amount']; ?>
+                    </td>
+                    <td class="col title">
+                        <?php echo $_giftCardHistory['action']; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        <?php else: ?>
+        <div class="message info empty"><span><?php echo __('You have not gift card history!'); ?></span></div>
+        <?php endif; ?>
+    </table>
+</div>
