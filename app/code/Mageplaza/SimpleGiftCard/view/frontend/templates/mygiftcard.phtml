@@ -68,11 +68,17 @@
         <div>
             <p class="font-weight-bold">Redeem</p>
             <div>
-                <form action="" method="post" class="form-container">
-                    <input type="text" name="" id="" placeholder="Enter gift card code">
+                <form id="form-reddem"
+                      action="<?= $block->getUrl('customer-simple-gift-card/giftcardhistory/redeem'); ?>" method="post"
+                      class="form-container">
+                    <input type="text" name="code" id="" placeholder="Enter gift card code">
                     <button class="btn-primary" type="submit">Redeem</button>
                 </form>
             </div>
+            <div id="div-error-message-gift-card" class="message info empty" style="display: none;"><span
+                    id="span-error-message-gift-card"></span></div>
+            <div id="div-success-message-gift-card" class="message info success" style="display: none;"><span
+                    id="span-success-message-gift-card"></span></div>
         </div>
     <?php endif; ?>
 </div>
@@ -113,3 +119,44 @@
         <?php endif; ?>
     </table>
 </div>
+<script>
+    require(
+        [
+            'jquery'
+        ],
+        function (
+            $
+        ) {
+            $("#form-reddem").submit(function (e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                var form = $(this);
+                var actionUrl = form.attr('action');
+                $.ajax({
+                    url: actionUrl,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: form.serialize(), // serializes the form's elements.
+                    showLoader: true,
+                    success: function (data) {
+                        if (data.status === 200) {
+                            $("#div-error-message-gift-card").css("display", "none");
+                            $("#div-success-message-gift-card").css("display", "block");
+                            console.log(data.status);
+                            $("#span-success-message-gift-card").text(data.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1400);
+                        } else if (data.status === 400) {
+                            $("#div-success-message-gift-card").css("display", "none");
+                            $("#div-error-message-gift-card").css("display", "block");
+                            console.log(data.status);
+                            $("#span-error-message-gift-card").text(data.message);
+                        }
+
+                    }
+                });
+            });
+        })
+    ;
+
+</script>̥

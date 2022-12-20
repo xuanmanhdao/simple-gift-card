@@ -25,9 +25,11 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $currentCustomer = $this->_customerSession->getCustomer()->getId();
+//        $currentCustomer = $this->_customerSession->getCustomer()->getId();
 
-        if ($currentCustomer === null) {
+        $currentCustomer = $this->_customerSession->isLoggedIn();
+
+        if (!$currentCustomer) {
             return $this->_redirect('customer/account/login/');
         }
         $resultPage = $this->resultPageFactory->create();

@@ -64,7 +64,12 @@ class ListGiftCard extends \Magento\Framework\View\Element\Template
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
         );
 
-        if ($valueConfigurationRedeem == 1) {
+        $valueConfigurationEnable = $this->_scopeConfig->getValue(
+            'gift_card/general/gift_card_enable',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+        );
+
+        if ($valueConfigurationRedeem == 1 && $valueConfigurationEnable == 1) {
             $result = true;
         }
         return $result;
