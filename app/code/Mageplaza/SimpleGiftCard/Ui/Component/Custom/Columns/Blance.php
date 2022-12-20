@@ -68,6 +68,8 @@ class Blance extends \Magento\Ui\Component\Listing\Columns\Column
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item[$fieldName])) {
                     $item[$fieldName] = $currency->toCurrency(sprintf("%f", $item[$fieldName]));
+//                    $item[$fieldName] = $item[$fieldName]."vndd" ;
+
                 }
             }
         }

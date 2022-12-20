@@ -29,18 +29,18 @@ class ActionTest extends \Magento\Framework\App\Action\Action
         ];
 
 //        Store data
-        try {
-            $giftCard->addData($data)->save();
-            echo "</br>" . $giftCard->testABCD('Hello my friend. Ban da save thanh cong!');
-        } catch (\Exception $e) {
-            echo "</br>".$e->getMessage() . "Not saved! SOS";
-        }
+//        try {
+//            $giftCard->addData($data)->save();
+//            echo "</br>" . $giftCard->testABCD('Hello my friend. Ban da save thanh cong!');
+//        } catch (\Exception $e) {
+//            echo "</br>".$e->getMessage() . "Not saved! SOS";
+//        }
 
 ////        Edit data
 //        try {
-//            $dataByID = $giftCard->load(11);
+//            $dataByID = $giftCard->load(88);
 //            if ($dataByID->getData('giftcard_id')) {
-//                $dataByID->setCode('ZXCVBNM')->save();
+//                $dataByID->setCode('ZXCVBNM451')->save();
 //                echo "</br>" . $giftCard->testABCD('Hello my friend. Ban da edit thanh cong!');
 //            } else {
 //                echo "</br>" . $giftCard->testABCD('Hello my friend. ID of gift card not exist!');
@@ -50,19 +50,19 @@ class ActionTest extends \Magento\Framework\App\Action\Action
 //        }
 
 //        Delete data
-//        try {
-//            $dataByID = $giftCard->load(6);
-//            echo $dataByID->getData('giftcard_id');
-//
-//            if ($dataByID->getData('giftcard_id')) {
-//                $dataByID->delete();
-//                echo "</br>" . $giftCard->testABCD('Hello my friend. Ban da delete thanh cong!');
-//            } else {
-//                echo "</br>" . $giftCard->testABCD('Hello my friend. ID of gift card want to delete not exist!');
-//            }
-//        } catch (\Exception $e) {
-//            echo "</br>" .$e->getMessage().  "Not edited! SOS";
-//        }
+        try {
+            $dataByID = $giftCard->load(6);
+            echo $dataByID->getData('giftcard_id');
+
+            if ($dataByID->getId('giftcard_id')) {
+                $dataByID->delete();
+                echo "</br>" . $giftCard->testABCD('Hello my friend. Ban da delete thanh cong!');
+            } else {
+                echo "</br>" . $giftCard->testABCD('Hello my friend. ID of gift card want to delete not exist!');
+            }
+        } catch (\Exception $e) {
+            echo "</br>" .$e->getMessage().  "Not edited! SOS";
+        }
 
     }
 }

@@ -3,16 +3,16 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="mageplaza_extension" translate="label" sortOrder="1">
-            <label>MAGEPLAZA EXTENSIONS</label>
+            <label>MAGEPLAZA EXTENSIONS in etc/adminhtml/system.xml</label>
         </tab>
         <section id="gift_card" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Gift Card</label>
+            <label>Gift Card in etc/adminhtml/system.xml</label>
             <tab>mageplaza_extension</tab>
             <resource>Mageplaza_SimpleGiftCard::mageplaza_configuration</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                    showInStore="1">
-                <label>General Configuration</label>
+                <label>General Configuration in etc/adminhtml/system.xml</label>
                 <field id="gift_card_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
                        showInWebsite="1" showInStore="0" canRestore="1">
                     <label>Enable Gift Card</label>

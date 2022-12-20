@@ -29,7 +29,7 @@ class Code extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 //        dd($model->getData());
 
         $form = $this->_formFactory->create();
-        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Gift Card Information')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Gift Card Information in Block/Edit/Tab/Code.php 3')]);
         if (!$model->getId()) {
             $fieldset->addField('code_length', 'text', [
                 'name' => 'code_length',
@@ -85,7 +85,7 @@ class Code extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
     public function getTabLabel()
     {
-        return __('Gift card information');
+        return __('Gift card information in Block/Edit/Tab/Code.php 2');
     }
 
     public function getTabTitle()

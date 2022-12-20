@@ -1,5 +1,6 @@
 <?php $_giftCardHistorys = $block->getListGiftCardHistory();
 //dd($_giftCardHistorys);
+//dd($block->checkConfiguration());
 ?>
 <style>
     .giftcard-heading {
@@ -61,17 +62,19 @@
 <div class="action-container">
     <div>
         <p class="font-weight-bold">Balance</p>
-        <p>$350</p>
+        <p><?php echo $block->formatCurrency($block->getBalanceOfCustomer()); ?></p>
     </div>
-    <div>
-        <p class="font-weight-bold">Redeem</p>
+    <?php if ($block->checkConfiguration()) : ?>
         <div>
-            <form action="" method="post" class="form-container">
-                <input type="text" name="" id="" placeholder="Enter gift card code">
-                <button class="btn-primary" type="submit">Redeem</button>
-            </form>
+            <p class="font-weight-bold">Redeem</p>
+            <div>
+                <form action="" method="post" class="form-container">
+                    <input type="text" name="" id="" placeholder="Enter gift card code">
+                    <button class="btn-primary" type="submit">Redeem</button>
+                </form>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
 
 <div class="table-container">
@@ -90,13 +93,13 @@
             <?php foreach ($_giftCardHistorys as $_giftCardHistory): ?>
                 <tr>
                     <td class="col title">
-                        <?php echo $_giftCardHistory['action_time']; ?>
+                        <?php echo $block->formatDate($_giftCardHistory['action_time'], \IntlDateFormatter::LONG); ?>
                     </td>
                     <td class="col title">
                         <?php echo $block->getCodeById($_giftCardHistory['giftcard_id'])['code']; ?>
                     </td>
                     <td class="col title">
-                        <?php echo $_giftCardHistory['amount']; ?>
+                        <?php echo $block->formatCurrency($_giftCardHistory['amount']); ?>
                     </td>
                     <td class="col title">
                         <?php echo $_giftCardHistory['action']; ?>
@@ -105,7 +108,8 @@
             <?php endforeach; ?>
             </tbody>
         <?php else: ?>
-        <div class="message info empty"><span><?php echo __('You have not gift card history!'); ?></span></div>
+
+            <div class="message info empty"><span><?php echo __('You have not gift card history!'); ?></span></div>
         <?php endif; ?>
     </table>
 </div>

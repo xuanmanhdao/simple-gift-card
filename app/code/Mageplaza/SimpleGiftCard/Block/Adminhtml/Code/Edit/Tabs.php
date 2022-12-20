@@ -8,6 +8,6 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
         parent::_construct();
         $this->setId('giftcard_tabs');
         $this->setDestElementId('edit_form');
-        $this->setTitle(__('Gift Card Information'));
+        $this->setTitle(__('Gift Card Information in Block/Adminhtml/Code/Edit/Tabs.php'));
     }
 }

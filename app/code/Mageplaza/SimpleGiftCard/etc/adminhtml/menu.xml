@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Mageplaza_SimpleGiftCard::sub_menu_mageplaza" title="Mageplaza" module="Mageplaza_SimpleGiftCard" sortOrder="51" resource="Mageplaza_SimpleGiftCard::sub_menu_mageplaza"/>
+        <add id="Mageplaza_SimpleGiftCard::sub_menu_mageplaza" title="Mageplaza in etc/adminhtml/menu.xml" module="Mageplaza_SimpleGiftCard" sortOrder="30" resource="Mageplaza_SimpleGiftCard::sub_menu_mageplaza"/>
 
 
         <add id="Mageplaza_SimpleGiftCard::sub_title_menu_mageplaza"
