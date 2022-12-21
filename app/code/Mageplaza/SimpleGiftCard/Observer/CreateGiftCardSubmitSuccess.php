@@ -15,12 +15,15 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
 
     protected $_redirect;
 
+    protected $_productFactory;
+
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface     $scopeConfig,
         \Mageplaza\SimpleGiftCard\Model\GiftCardFactory        $giftCardFactory,
         \Mageplaza\SimpleGiftCard\Model\GiftCardHistoryFactory $giftCardHistoryFactory,
         \Magento\Customer\Model\Session                        $customerSession,
-        \Magento\Framework\App\Response\RedirectInterface      $redirect
+        \Magento\Framework\App\Response\RedirectInterface      $redirect,
+        \Magento\Catalog\Model\ProductFactory                  $productFactory
     )
     {
         $this->_scopeConfig = $scopeConfig;
@@ -28,6 +31,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
         $this->_giftCardHistoryFactory = $giftCardHistoryFactory;
         $this->_customerSession = $customerSession;
         $this->_redirect = $redirect;
+        $this->_productFactory = $productFactory;
     }
 
     public function createCodeGiftCard()
@@ -53,21 +57,19 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
     {
         $currentCustomer = $this->_customerSession->isLoggedIn();
         if (!$currentCustomer) {
-//            /** @var \Magento\Framework\App\Action\Action $controller */
-//            $controller = $observer->getControllerAction();
-//            return $this->_redirect->redirect($controller->getResponse(), 'customer/account/login');
             return $this;
         } else {
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $orderID = $observer->getData('order')['increment_id'];
             $customerID = $observer->getData('order')['customer_id'];
             $totalQuantityOrdered = $observer->getData('order')['total_qty_ordered'];
 
+//            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $allAttributeProductOrdered = $observer->getData('order')->getAllVisibleItems();
             $giftCardAmount = '';
             foreach ($allAttributeProductOrdered as $item) {
                 $productId = $item->getProductId();
-                $product = $objectManager->create('Magento\Catalog\Model\Product')->load($productId);
+//                $product = $objectManager->create('Magento\Catalog\Model\Product')->load($productId);
+                $product = $this->_productFactory->create()->load($productId);
                 $giftCardAmount = $product->getData('gift_card_amount');
             }
 
@@ -79,21 +81,28 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
                 try {
                     $codeGiftCard = $this->createCodeGiftCard();
                     $modelGiftCard = $this->_giftCardFactory->create();
-                    $modelGiftCard->setData('code', $codeGiftCard);
-                    $modelGiftCard->setData('balance', $balance);
-                    $modelGiftCard->setData('amount_used', $amount_used);
-                    $modelGiftCard->setData('create_from', $create_from);
+                    $dataGiftCard = [
+                        'code' => $codeGiftCard,
+                        'balance' => $balance,
+                        'amount_used' => $amount_used,
+                        'create_from' => $create_from,
+                    ];
+                    $modelGiftCard->addData($dataGiftCard);
                     $modelGiftCard->save();
 
-                    $lastInsrtedIdGiftCard = $modelGiftCard->getId();
+                    $lastInsertedIdGiftCard = $modelGiftCard->getId();
                     $currentCustomerId = $customerID;
                     $action = "Create";
                     $amountCurrent = $giftCardAmount;
+
                     $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
-                    $modelGiftCardHistory->setData('giftcard_id', $lastInsrtedIdGiftCard);
-                    $modelGiftCardHistory->setData('customer_id', $currentCustomerId);
-                    $modelGiftCardHistory->setData('amount', $amountCurrent);
-                    $modelGiftCardHistory->setData('action', $action);
+                    $dataGiftCardHistory = [
+                        'giftcard_id' => $lastInsertedIdGiftCard,
+                        'customer_id' => $currentCustomerId,
+                        'amount' => $amountCurrent,
+                        'action' => $action,
+                    ];
+                    $modelGiftCardHistory->addData($dataGiftCardHistory);
                     $modelGiftCardHistory->save();
                 } catch (\Exception $e) {
                     return $e . getMessage();

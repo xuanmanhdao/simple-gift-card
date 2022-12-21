@@ -100,16 +100,18 @@ class Redeem extends \Magento\Framework\App\Action\Action
                     return $resultJson->setData(['status' => 400, 'message' => 'Amount current of gift card is 0']);
                 } elseif ($amountCurrent > 0) {
                     try {
-                        $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
 
                         $currentCustomerId = $this->_customerSession->getCustomer()->getId();
                         $action = "Redeem";
 
-                        $modelGiftCardHistory->setData('giftcard_id', $giftCardID);
-//                    $modelGiftCardHistory->setGiftcardId($giftCardID);
-                        $modelGiftCardHistory->setData('customer_id', $currentCustomerId);
-                        $modelGiftCardHistory->setData('amount', $amountCurrent);
-                        $modelGiftCardHistory->setData('action', $action);
+                        $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
+                        $dataGiftCardHistory = [
+                            'giftcard_id' => $giftCardID,
+                            'customer_id' => $currentCustomerId,
+                            'amount' => $amountCurrent,
+                            'action' => $action,
+                        ];
+                        $modelGiftCardHistory->addData($dataGiftCardHistory);
                         $modelGiftCardHistory->save();
 
                         $dataGiftCard->setAmountUsed($dataGiftCard->getBalance());

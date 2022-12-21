@@ -29,7 +29,6 @@ class Save extends Action
 
         try {
             $paramID = (int)$this->getRequest()->getParam('id');
-//            dd($paramID);
             if (!$paramID) {
                 $objectRequest = $this->getRequest()->getPost();
 //            $data = (array)$objectRequest;
@@ -54,10 +53,13 @@ class Save extends Action
                     $amount_used = 0;
 
                     $model = $this->giftCardFactory->create();
-                    $model->setData('code', $giftCode);
-                    $model->setData('balance', $objectRequest->balance);
-                    $model->setData('amount_used', $amount_used);
-                    $model->setData('create_from', $create_from);
+                    $data = [
+                        'code' => $giftCode,
+                        'balance' => $objectRequest->balance,
+                        'amount_used' => $amount_used,
+                        'create_from' => $create_from,
+                    ];
+                    $model->addData($data);
                     $model->save();
 
                     $this->messageManager->addSuccessMessage(__("Data Saved Successfully."));
@@ -73,9 +75,6 @@ class Save extends Action
                     $this->messageManager->addSuccessMessage(__("Data Changed Successfully."));
 
                     $this->_redirect('admin-simple-gift-card/code/index');
-//                    $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-//                    $resultRedirect->setUrl($this->_redirect->getRefererUrl());
-//                    return $resultRedirect;
                 } else {
                     $this->messageManager->addErrorMessage(__("Data Changed Error."));
                 }
