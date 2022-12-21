@@ -28,6 +28,8 @@ class Redeem extends \Magento\Framework\App\Action\Action
 
     protected $_customerData;
 
+    protected $_giftCardHistoryResource;
+
     public function __construct(Context                                                                  $context,
                                 GiftCardFactory                                                          $giftCardFactory,
                                 \Magento\Customer\Model\Session                                          $customerSession,
@@ -39,15 +41,15 @@ class Redeem extends \Magento\Framework\App\Action\Action
                                 \Magento\Customer\Api\CustomerRepositoryInterface                        $customerRepoInterface,
 
                                 \Magento\Customer\Model\Customer                                         $customer,
-                                \Magento\Customer\Model\Data\Customer                                    $customerData
-
+                                \Magento\Customer\Model\Data\Customer                                    $customerData,
+                                \Mageplaza\SimpleGiftCard\Model\ResourceModel\GiftCardHistory            $giftCardHistoryResource
 
     )
     {
         $this->_customerSession = $customerSession;
         $this->_giftCardFactory = $giftCardFactory;
         $this->_connection = $resource->getConnection();
-//        $this->_giftCardCollectionFactory = $giftCardCollectionFactory;
+        $this->_giftCardCollectionFactory = $giftCardCollectionFactory;
 
         $this->_jsonFactory = $jsonFactory;
         $this->_giftCardHistoryFactory = $giftCardHistoryFactory;
@@ -57,6 +59,7 @@ class Redeem extends \Magento\Framework\App\Action\Action
 
         $this->_customer = $customer;
         $this->_customerData = $customerData;
+        $this->_giftCardHistoryResource = $giftCardHistoryResource;
     }
 
     public function getGiftCardByCode($code)
@@ -117,10 +120,7 @@ class Redeem extends \Magento\Framework\App\Action\Action
 
                         $totalBalance = $balanceCurrentOfCustomer + $amountCurrent;
 
-                        $tableName = $this->_connection->getTableName('customer_entity');
-                        $data = ["giftcard_balance" => $totalBalance];
-                        $where = ['entity_id = ?' => (int)$currentCustomerId];
-                        $this->_connection->update($tableName, $data, $where);
+                        $this->_giftCardHistoryResource->setBalanceCustomer($totalBalance, $currentCustomerId);
 
                         $resultJson = $this->_jsonFactory->create();
                         return $resultJson->setData(['status' => 200, 'message' => 'Redeem success!']);

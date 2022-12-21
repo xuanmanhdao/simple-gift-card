@@ -1,4 +1,5 @@
 <?php
+
 namespace Mageplaza\SimpleGiftCard\Model;
 class GiftCardHistory extends \Magento\Framework\Model\AbstractModel
 {
