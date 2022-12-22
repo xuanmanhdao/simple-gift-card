@@ -56,56 +56,49 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
     function execute(\Magento\Framework\Event\Observer $observer)
     {
         $currentCustomer = $this->_customerSession->isLoggedIn();
-        if (!$currentCustomer) {
-            return $this;
-        } else {
+        if ($currentCustomer) {
             $orderID = $observer->getData('order')['increment_id'];
             $customerID = $observer->getData('order')['customer_id'];
-            $totalQuantityOrdered = $observer->getData('order')['total_qty_ordered'];
-
-//            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $create_from = $orderID;
+            $amount_used = 0;
             $allAttributeProductOrdered = $observer->getData('order')->getAllVisibleItems();
-            $giftCardAmount = '';
             foreach ($allAttributeProductOrdered as $item) {
                 $productId = $item->getProductId();
-//                $product = $objectManager->create('Magento\Catalog\Model\Product')->load($productId);
                 $product = $this->_productFactory->create()->load($productId);
                 $giftCardAmount = $product->getData('gift_card_amount');
-            }
+                $balance = $giftCardAmount;
+                $quantityOrdered = $item->getQtyordered();
 
-            $create_from = $orderID;
-            $balance = $giftCardAmount;
-            $amount_used = 0;
+                for ($i = 0; $i < $quantityOrdered; $i++) {
+                    try {
+                        $codeGiftCard = $this->createCodeGiftCard();
+                        $modelGiftCard = $this->_giftCardFactory->create();
+                        $dataGiftCard = [
+                            'code' => $codeGiftCard,
+                            'balance' => $balance,
+                            'amount_used' => $amount_used,
+                            'create_from' => $create_from,
+                        ];
+                        $modelGiftCard->addData($dataGiftCard);
+                        $modelGiftCard->save();
 
-            for ($i = 0; $i < $totalQuantityOrdered; $i++) {
-                try {
-                    $codeGiftCard = $this->createCodeGiftCard();
-                    $modelGiftCard = $this->_giftCardFactory->create();
-                    $dataGiftCard = [
-                        'code' => $codeGiftCard,
-                        'balance' => $balance,
-                        'amount_used' => $amount_used,
-                        'create_from' => $create_from,
-                    ];
-                    $modelGiftCard->addData($dataGiftCard);
-                    $modelGiftCard->save();
+                        $lastInsertedIdGiftCard = $modelGiftCard->getId();
+                        $currentCustomerId = $customerID;
+                        $action = "Create";
+                        $amountCurrent = $giftCardAmount;
 
-                    $lastInsertedIdGiftCard = $modelGiftCard->getId();
-                    $currentCustomerId = $customerID;
-                    $action = "Create";
-                    $amountCurrent = $giftCardAmount;
-
-                    $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
-                    $dataGiftCardHistory = [
-                        'giftcard_id' => $lastInsertedIdGiftCard,
-                        'customer_id' => $currentCustomerId,
-                        'amount' => $amountCurrent,
-                        'action' => $action,
-                    ];
-                    $modelGiftCardHistory->addData($dataGiftCardHistory);
-                    $modelGiftCardHistory->save();
-                } catch (\Exception $e) {
-                    return $e . getMessage();
+                        $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
+                        $dataGiftCardHistory = [
+                            'giftcard_id' => $lastInsertedIdGiftCard,
+                            'customer_id' => $currentCustomerId,
+                            'amount' => $amountCurrent,
+                            'action' => $action,
+                        ];
+                        $modelGiftCardHistory->addData($dataGiftCardHistory);
+                        $modelGiftCardHistory->save();
+                    } catch (\Exception $e) {
+                        return $e . getMessage();
+                    }
                 }
             }
             return $this;

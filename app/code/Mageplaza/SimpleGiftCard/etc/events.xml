@@ -3,4 +3,7 @@
     <event name="sales_model_service_quote_submit_success">
         <observer name="mageplaza_simplegiftcard_create_giftcard-submit-success" instance="Mageplaza\SimpleGiftCard\Observer\CreateGiftCardSubmitSuccess" />
     </event>
+    <event name="controller_action_predispatch_checkout_cart_couponPost">
+        <observer name="mageplaza_simplegiftcard_handler_custom-coupon-apply" instance="Mageplaza\SimpleGiftCard\Observer\HandlerCustomCouponApply" />
+    </event>
 </config>

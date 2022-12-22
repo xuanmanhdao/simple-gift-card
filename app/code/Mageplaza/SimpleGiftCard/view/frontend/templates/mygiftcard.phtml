@@ -102,7 +102,11 @@
                         <?php echo $block->formatDate($_giftCardHistory['action_time'], \IntlDateFormatter::LONG); ?>
                     </td>
                     <td class="col title">
-                        <?php echo $block->getCodeById($_giftCardHistory['giftcard_id'])['code']; ?>
+                        <?php
+//                        echo $block->getCodeById($_giftCardHistory['giftcard_id'])['code'];
+
+                        echo $block->getCodeById($_giftCardHistory['giftcard_id'])->getCode();
+                        ?>
                     </td>
                     <td class="col title">
                         <?php echo $block->formatCurrency($_giftCardHistory['amount']); ?>
