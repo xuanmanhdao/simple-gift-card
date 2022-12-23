@@ -11,7 +11,7 @@ class Index extends \Magento\Framework\App\Action\Action
     /**      * @param \Magento\Framework\App\Action\Context $context */
     public function __construct(\Magento\Framework\App\Action\Context      $context,
                                 \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-                                \Magento\Customer\Model\Session            $customerSession)
+                                \Magento\Customer\Model\SessionFactory            $customerSession)
     {
         $this->_customerSession = $customerSession;
         $this->resultPageFactory = $resultPageFactory;
@@ -27,7 +27,7 @@ class Index extends \Magento\Framework\App\Action\Action
     {
 //        $currentCustomer = $this->_customerSession->getCustomer()->getId();
 
-        $currentCustomer = $this->_customerSession->isLoggedIn();
+        $currentCustomer = $this->_customerSession->create()->isLoggedIn();
 
         if (!$currentCustomer) {
             return $this->_redirect('customer/account/login/');
@@ -36,12 +36,6 @@ class Index extends \Magento\Framework\App\Action\Action
         $resultPage->getConfig()->getTitle()->prepend(__('List Gift Registry'));
         return $resultPage;
     }
-
-    /*public function execute()
-    {
-        $this->_view->loadLayout();
-        $this->_view->renderLayout();
-    }*/
 
 }
 

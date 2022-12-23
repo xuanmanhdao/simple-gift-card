@@ -67,6 +67,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
             $allAttributeProductOrdered = $observer->getData('order')->getAllVisibleItems();
             foreach ($allAttributeProductOrdered as $item) {
                 $isVirtual = $item->getIsVirtual();
+
                 if ($isVirtual == 1) {
 //                    $productId = $item->getProductId();
 //                    $product = $this->_productFactory->create()->load($productId);
@@ -74,40 +75,43 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
 
                     $product = $item->getProduct();
                     $giftCardAmount = $product->getData('gift_card_amount');
-                    $balance = $giftCardAmount;
-                    $quantityOrdered = $item->getQtyordered();
 
-                    for ($i = 0; $i < $quantityOrdered; $i++) {
-                        try {
-                            $codeGiftCard = $this->createCodeGiftCard();
-                            $modelGiftCard = $this->_giftCardFactory->create();
-                            $dataGiftCard = [
-                                'code' => $codeGiftCard,
-                                'balance' => $balance,
-                                'amount_used' => $amount_used,
-                                'create_from' => $create_from,
-                            ];
-                            $modelGiftCard->addData($dataGiftCard);
-                            $modelGiftCard->save();
+                    if ($giftCardAmount) {
+                        $balance = $giftCardAmount;
+                        $quantityOrdered = $item->getQtyordered();
+                        for ($i = 0; $i < $quantityOrdered; $i++) {
+                            try {
+                                $codeGiftCard = $this->createCodeGiftCard();
+                                $modelGiftCard = $this->_giftCardFactory->create();
+                                $dataGiftCard = [
+                                    'code' => $codeGiftCard,
+                                    'balance' => $balance,
+                                    'amount_used' => $amount_used,
+                                    'create_from' => $create_from,
+                                ];
+                                $modelGiftCard->addData($dataGiftCard);
+                                $modelGiftCard->save();
 
-                            $lastInsertedIdGiftCard = $modelGiftCard->getId();
-                            $currentCustomerId = $customerID;
-                            $action = "Create";
-                            $amountCurrent = $giftCardAmount;
+                                $lastInsertedIdGiftCard = $modelGiftCard->getId();
+                                $currentCustomerId = $customerID;
+                                $action = "Create $orderID";
+                                $amountCurrent = $giftCardAmount;
 
-                            $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
-                            $dataGiftCardHistory = [
-                                'giftcard_id' => $lastInsertedIdGiftCard,
-                                'customer_id' => $currentCustomerId,
-                                'amount' => $amountCurrent,
-                                'action' => $action,
-                            ];
-                            $modelGiftCardHistory->addData($dataGiftCardHistory);
-                            $modelGiftCardHistory->save();
-                        } catch (\Exception $e) {
-                            return $e . getMessage();
+                                $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
+                                $dataGiftCardHistory = [
+                                    'giftcard_id' => $lastInsertedIdGiftCard,
+                                    'customer_id' => $currentCustomerId,
+                                    'amount' => $amountCurrent,
+                                    'action' => $action,
+                                ];
+                                $modelGiftCardHistory->addData($dataGiftCardHistory);
+                                $modelGiftCardHistory->save();
+                            } catch (\Exception $e) {
+                                return $e . getMessage();
+                            }
                         }
                     }
+
                 }
 
             }
