@@ -59,15 +59,20 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
         $controllerAction = $observer->getEvent()->getControllerAction();
         $currentActionName = $controllerAction->getRequest()->getActionName();
         $valueCodeCustomerApply = $observer->getControllerAction()->getRequest()->getParam('coupon_code');
+
+//        $result = $observer->getEvent()->getResult();
         if ($this->checkIsCodeCustomOrNot($valueCodeCustomerApply)) {
             try {
-                $this->_checkoutSession->getQuote()->setCouponCode($valueCodeCustomerApply)->save();
-//                dd($valueCodeCustomerApply);
+                $quote = $this->_checkoutSession->getQuote()->collectTotals();
+                $quote->setCouponCode($valueCodeCustomerApply)->save();
                 $this->_messageManager->addSuccessMessage("You used coupon code $valueCodeCustomerApply");
                 $controllerAction->getResponse()->setRedirect($this->_redirect->getRefererUrl());
-                $this->_actionFlag->set('', \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
-//                $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
-                $this->_redirect->redirect($controllerAction->getResponse(), $this->_redirect->getRefererUrl());
+//                $this->_actionFlag->set('', \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
+                $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
+
+//                $this->_redirect->redirect($controllerAction->getResponse(), $this->_redirect->getRefererUrl());
+                $this->_redirect->redirect($controllerAction->getResponse(),$this->_redirect->getRefererUrl());
+                return $this;
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->_messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {

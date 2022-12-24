@@ -57,9 +57,6 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
     {
         $currentCustomer = $this->_customerSession->isLoggedIn();
         if ($currentCustomer) {
-//            $orderID = $observer->getData('order')['increment_id'];
-//            $customerID = $observer->getData('order')['customer_id'];
-
             $orderID = $observer->getData('order')->getIncrementId();
             $customerID = $observer->getData('order')->getCustomerId();
             $create_from = $orderID;

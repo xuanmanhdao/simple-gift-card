@@ -103,8 +103,6 @@ $_giftCardHistorys = $block->getListGiftCardHistory();
                     </td>
                     <td class="col title">
                         <?php
-//                        echo $block->getCodeById($_giftCardHistory['giftcard_id'])['code'];
-
                         echo $block->getCodeById($_giftCardHistory['giftcard_id'])->getCode();
                         ?>
                     </td>

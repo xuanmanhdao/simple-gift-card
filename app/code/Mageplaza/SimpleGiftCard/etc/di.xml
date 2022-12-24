@@ -19,4 +19,8 @@
     <type name="Magento\Checkout\Block\Cart\Coupon">
         <plugin name="checkout_coupon_apply" type="Mageplaza\SimpleGiftCard\Plugin\CheckoutCouponApply"/>
     </type>
+
+    <type name="Magento\Framework\App\Action\AbstractAction">
+        <plugin name="customer-session-data-to-context" type="Mageplaza\SimpleGiftCard\Plugin\CustomerSessionContext" sortOrder="15"/>
+    </type>
 </config>

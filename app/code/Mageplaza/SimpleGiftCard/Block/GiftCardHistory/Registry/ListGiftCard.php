@@ -26,7 +26,8 @@ class ListGiftCard extends \Magento\Framework\View\Element\Template
         \Mageplaza\SimpleGiftCard\Model\ResourceModel\GiftCardHistory\CollectionFactory $giftCardHistoryCollectionFactory,
         \Mageplaza\SimpleGiftCard\Model\GiftCardFactory                                 $giftCardFactory,
         Template\Context                                                                $context,
-        array                                                                           $data = []
+        array                                                                           $data = [],
+
     )
     {
         parent::__construct($context, $data);

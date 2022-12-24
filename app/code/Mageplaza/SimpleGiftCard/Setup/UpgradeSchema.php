@@ -131,6 +131,21 @@ class UpgradeSchema implements UpgradeSchemaInterface
             }
         }
 
+        if (version_compare($context->getVersion(), '2.0.1', '<')) {
+            if ($installer->tableExists('quote')) {
+                $installer->getConnection()->addColumn(
+                    $installer->getTable('quote'),
+                    'coupon_code_custom',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'length' => '255',
+                        'nullable' => true,
+                        'default' => null,
+                        'comment' => 'Coupon Code Custom'
+                    ]
+                );
+            }
+        }
         $installer->endSetup();
     }
 }
