@@ -54,24 +54,42 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
         return $result;
     }
 
+    public function checkCodeCustomEnableOrNot($valueCodeCustomerApply): bool
+    {
+        $result = true;
+        $giftCard = $this->_giftCardFactory->create()->load($valueCodeCustomerApply, 'code');
+        $amountEnabling = $giftCard->getBalance() - $giftCard->getAmountUsed();
+
+        if ($amountEnabling <= 0) {
+            $result = false;
+        }
+        return $result;
+    }
+
     public function execute(Observer $observer)
     {
         $controllerAction = $observer->getEvent()->getControllerAction();
         $currentActionName = $controllerAction->getRequest()->getActionName();
         $valueCodeCustomerApply = $observer->getControllerAction()->getRequest()->getParam('coupon_code');
-//        $valueCodeCustomerApply=trim(ucwords($valueCodeCustomerApply));
         $quote = $this->_checkoutSession->getQuote();
         $quote->setCouponCodeCustom($valueCodeCustomerApply);
 
         if ($this->checkIsCodeCustomOrNot($valueCodeCustomerApply)) {
+            if (!$this->checkCodeCustomEnableOrNot($valueCodeCustomerApply)) {
+                $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
+                $this->_messageManager->addErrorMessage("You used coupon code $valueCodeCustomerApply! The value of the code is now 0, please enter a another code.");
+                $controllerAction->getResponse()->setRedirect($this->_redirect->getRefererUrl());
+                $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
+                $this->_redirect->redirect($controllerAction->getResponse(), $this->_redirect->getRefererUrl());
+                return $this;
+            }
             try {
                 $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
                 $this->_messageManager->addSuccessMessage("You used coupon code $valueCodeCustomerApply");
                 $controllerAction->getResponse()->setRedirect($this->_redirect->getRefererUrl());
 //                $this->_actionFlag->set('', \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
                 $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
-
-                $this->_redirect->redirect($controllerAction->getResponse(),$this->_redirect->getRefererUrl());
+                $this->_redirect->redirect($controllerAction->getResponse(), $this->_redirect->getRefererUrl());
                 return $this;
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->_messageManager->addErrorMessage($e->getMessage());
