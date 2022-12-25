@@ -59,6 +59,7 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
         $controllerAction = $observer->getEvent()->getControllerAction();
         $currentActionName = $controllerAction->getRequest()->getActionName();
         $valueCodeCustomerApply = $observer->getControllerAction()->getRequest()->getParam('coupon_code');
+//        $valueCodeCustomerApply=trim(ucwords($valueCodeCustomerApply));
         $quote = $this->_checkoutSession->getQuote();
         $quote->setCouponCodeCustom($valueCodeCustomerApply);
 

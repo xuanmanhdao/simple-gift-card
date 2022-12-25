@@ -146,6 +146,15 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 );
             }
         }
+
+        if (version_compare($context->getVersion(), '2.0.2', '<')) {
+            $setup->getConnection()->renameTable($setup->getTable('mageplaza_simple_gift_card'), $setup->getTable('giftcard_code'));
+        }
+
+        if (version_compare($context->getVersion(), '2.0.3', '<')) {
+            $setup->getConnection()->renameTable($setup->getTable('mageplaza_giftcard_history'), $setup->getTable('giftcard_history'));
+        }
+
         $installer->endSetup();
     }
 }

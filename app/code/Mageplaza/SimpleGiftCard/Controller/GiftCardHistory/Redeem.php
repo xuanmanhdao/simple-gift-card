@@ -88,7 +88,7 @@ class Redeem extends \Magento\Framework\App\Action\Action
             return $this->_redirect('customer/account/login/');
         } else {
             $objectRequest = $this->getRequest()->getPost();
-            $valueCode = $objectRequest->code;
+            $valueCode = trim(ucwords($objectRequest->code));
 
             $dataGiftCard = $this->getGiftCardByCode($valueCode);
             $giftCardID = $dataGiftCard->getId();

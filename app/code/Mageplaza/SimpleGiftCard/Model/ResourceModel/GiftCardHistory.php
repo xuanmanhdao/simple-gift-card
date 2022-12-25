@@ -25,7 +25,8 @@ class GiftCardHistory extends \Magento\Framework\Model\ResourceModel\Db\Abstract
 
     protected function _construct()
     {
-        $this->_init('mageplaza_giftcard_history', 'history_id');
+//        $this->_init('mageplaza_giftcard_history', 'history_id');
+        $this->_init('giftcard_history', 'history_id');
     }
 
     public function setBalanceCustomer($totalBalance, $currentCustomerId)
