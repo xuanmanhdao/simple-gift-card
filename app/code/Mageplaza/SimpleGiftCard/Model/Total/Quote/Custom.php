@@ -95,9 +95,9 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         /*
          * subtotal, discount_amount, base_discount_amount, discount_description, subtotal_with_discount
          */
+//        $couponCode = $quote->getCouponCode();
+        $couponCode = $quote->getCouponCodeCustom();
 
-//        dd($quote);
-        $couponCode = $quote->getCouponCode();
         $giftCard = $this->_giftCardFactory->create()->load($couponCode, 'code');
         if ($giftCard->getId()) {
             $amountEnabling = $giftCard->getBalance() - $giftCard->getAmountUsed();
