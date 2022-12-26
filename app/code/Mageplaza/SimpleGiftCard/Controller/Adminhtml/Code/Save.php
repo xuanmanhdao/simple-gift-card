@@ -77,11 +77,13 @@ class Save extends Action
                     $this->_redirect('admin-simple-gift-card/code/index');
                 } else {
                     $this->messageManager->addErrorMessage(__("Data Changed Error."));
+                    $this->_redirect('admin-simple-gift-card/code/index');
                 }
             }
 
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage($e, __("We can\'t submit your request, Please try again."));
+            $this->_redirect('admin-simple-gift-card/code/index');
         }
 
 //        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);

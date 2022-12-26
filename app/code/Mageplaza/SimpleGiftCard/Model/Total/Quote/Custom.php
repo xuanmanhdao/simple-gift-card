@@ -36,48 +36,6 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
      * @return $this|bool
      */
 
-    /*    public function collect(
-            \Magento\Quote\Model\Quote                          $quote,
-            \Magento\Quote\Api\Data\ShippingAssignmentInterface $shippingAssignment,
-            \Magento\Quote\Model\Quote\Address\Total            $total
-        )
-        {
-            //Fix for discount applied twice
-            $items = $shippingAssignment->getItems();
-            if (!count($items)) {
-                return $this;
-            }
-
-            parent::collect($quote, $shippingAssignment, $total);
-            $label = 'My Custom Discount';
-            $discountAmount = -10;
-            $appliedCartDiscount = 0;
-            if ($total->getDiscountDescription()) {
-                // If a discount exists in cart and another discount is applied, the add both discounts.
-                $appliedCartDiscount = $total->getDiscountAmount();
-                $discountAmount = $total->getDiscountAmount() + $discountAmount;
-                $label = $total->getDiscountDescription() . ', ' . $label;
-            }
-
-            $total->setDiscountDescription($label);
-            $total->setDiscountAmount($discountAmount);
-            $total->setBaseDiscountAmount($discountAmount);
-            $total->setSubtotalWithDiscount($total->getSubtotal() + $discountAmount);
-            $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $discountAmount);
-
-            if (isset($appliedCartDiscount)) {
-                dd($this);
-                $total->addTotalAmount($this->getCode(), $discountAmount - $appliedCartDiscount);
-                $total->addBaseTotalAmount($this->getCode(), $discountAmount - $appliedCartDiscount);
-            } else {
-                $total->addTotalAmount($this->getCode(), $discountAmount);
-                $total->addBaseTotalAmount($this->getCode(), $discountAmount);
-            }
-
-            return $this;
-        }*/
-
-
 // Version 1
     public function collect(
         \Magento\Quote\Model\Quote                          $quote,
@@ -85,7 +43,6 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         \Magento\Quote\Model\Quote\Address\Total            $total
     )
     {
-
         //Fix for discount applied twice
         $items = $shippingAssignment->getItems();
         if (!count($items)) {
@@ -102,47 +59,50 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         if ($giftCard->getId()) {
             $amountEnabling = $giftCard->getBalance() - $giftCard->getAmountUsed();
             $baseDiscountAmountApply = (($total->getSubtotal() - $amountEnabling) < 0) ? $total->getSubtotal() : $amountEnabling;
-
             $discountAmount = $this->_priceCurrency->convert($baseDiscountAmountApply);
 
-            $subTotalWithDiscount = $total->getSubtotal() - $discountAmount;
-            $baseSubTotalWithDiscount = $total->getBaseSubtotal() - $baseDiscountAmountApply;
+            $total->setData('coupon_code_custom', -$discountAmount);
 
-            $label = 'My Custom Discount Of ManhBauTroi';
-            $total->setDiscountDescription($label);
-            $total->setDiscountAmount($discountAmount);
-            $total->setBaseDiscountAmount($baseDiscountAmountApply);
-            $total->setSubtotalWithDiscount(($subTotalWithDiscount < 0) ? 0 : $subTotalWithDiscount);
-            $total->setBaseSubtotalWithDiscount(($baseSubTotalWithDiscount < 0) ? 0 : $baseSubTotalWithDiscount);
-
-//            $total->addTotalAmount($this->getCode(), -$discountAmount);
-//            $total->addBaseTotalAmount($this->getCode(), -$discountAmount);
-
-//            $total->addTotalAmount('customdiscount', -$discountAmount);
-//            $total->addBaseTotalAmount('customdiscount', -$discountAmount);
-
-            $total->setTotalAmount('discount', -$discountAmount);
-            $total->setBaseTotalAmount('discount', -$baseDiscountAmountApply);
-
-//            $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
+            $total->addTotalAmount('customdiscount', -$discountAmount);
+            $total->addBaseTotalAmount('customdiscount', -$baseDiscountAmountApply);
+            $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
             $quote->setCustomDiscount(-$discountAmount);
             return $this;
+
+
+            /*//            Dua vao core magento
+                        $amountEnabling = $giftCard->getBalance() - $giftCard->getAmountUsed();
+                        $baseDiscountAmountApply = (($total->getSubtotal() - $amountEnabling) < 0) ? $total->getSubtotal() : $amountEnabling;
+
+                        $discountAmount = $this->_priceCurrency->convert($baseDiscountAmountApply);
+
+                        $subTotalWithDiscount = $total->getSubtotal() - $discountAmount;
+                        $baseSubTotalWithDiscount = $total->getBaseSubtotal() - $baseDiscountAmountApply;
+
+                        $label = 'Coupon Code Custom';
+                        $total->setDiscountDescription($label);
+                        $total->setDiscountAmount($discountAmount);
+                        $total->setBaseDiscountAmount($baseDiscountAmountApply);
+                        $total->setSubtotalWithDiscount(($subTotalWithDiscount < 0) ? 0 : $subTotalWithDiscount);
+                        $total->setBaseSubtotalWithDiscount(($baseSubTotalWithDiscount < 0) ? 0 : $baseSubTotalWithDiscount);
+
+                        $total->setTotalAmount('discount', -$discountAmount);
+                        $total->setBaseTotalAmount('discount', -$baseDiscountAmountApply);
+                        $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
+                        $quote->setCustomDiscount(-$discountAmount);
+                        return $this;*/
         }
     }
 
     public function fetch(\Magento\Quote\Model\Quote $quote, \Magento\Quote\Model\Quote\Address\Total $total)
     {
         $result = null;
-        $amount = $total->getDiscountAmount();
+        $amount = $total->getData('coupon_code_custom');
 //        dd($amount);
-
-        // ONLY return 1 discount. Need to append existing
-        //see app/code/Magento/Quote/Model/Quote/Address.php
-
         if ($amount != 0) {
             $description = $total->getDiscountDescription();
             $result = [
-                'code' => $this->getCode(),
+                'code' => "mageplaza_coupon_code_custom",
                 'title' => strlen($description) ? __('Discount (%1)', $description) : __('Discount'),
                 'value' => $amount
             ];
