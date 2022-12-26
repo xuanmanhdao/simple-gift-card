@@ -17,13 +17,20 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
 
     protected $_productFactory;
 
+//    protected $_checkoutSession;
+
+    protected $_quoteFactory;
+
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface     $scopeConfig,
         \Mageplaza\SimpleGiftCard\Model\GiftCardFactory        $giftCardFactory,
         \Mageplaza\SimpleGiftCard\Model\GiftCardHistoryFactory $giftCardHistoryFactory,
         \Magento\Customer\Model\Session                        $customerSession,
         \Magento\Framework\App\Response\RedirectInterface      $redirect,
-        \Magento\Catalog\Model\ProductFactory                  $productFactory
+        \Magento\Catalog\Model\ProductFactory                  $productFactory,
+//        \Magento\Checkout\Model\Session                        $checkoutSession,
+        \Magento\Quote\Model\QuoteFactory                      $quoteFactory,
+
     )
     {
         $this->_scopeConfig = $scopeConfig;
@@ -32,6 +39,8 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
         $this->_customerSession = $customerSession;
         $this->_redirect = $redirect;
         $this->_productFactory = $productFactory;
+//        $this->_checkoutSession = $checkoutSession;
+        $this->_quoteFactory = $quoteFactory;
     }
 
     public function createCodeGiftCard()
@@ -52,13 +61,53 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
         return $randomString;
     }
 
+    public function checkCodeOfMeOrNotAndUpdateAmountUsed($quoteID, $discountAmount): bool
+    {
+        $result = false;
+        try {
+            $modelQuote = $this->_quoteFactory->create()->load($quoteID);
+            $valueCouponCodeCustom = $modelQuote->getCouponCodeCustom();
+            $giftCard = $this->_giftCardFactory->create()->load($valueCouponCodeCustom, 'code');
+            if ($giftCard->getId()) {
+//                $giftCard->setData('amount_used',$discountAmount)->save();
+                $giftCard->setAmountUsed(-$discountAmount)->save();
+
+                $currentCustomerId = $this->_customerSession->getCustomer()->getId();
+                $action = "Used for order";
+
+                $modelGiftCardHistory = $this->_giftCardHistoryFactory->create();
+                $dataGiftCardHistory = [
+                    'giftcard_id' => $giftCard->getId(),
+                    'customer_id' => $currentCustomerId,
+                    'amount' => -$discountAmount,
+                    'action' => $action,
+                ];
+                $modelGiftCardHistory->addData($dataGiftCardHistory);
+                $modelGiftCardHistory->save();
+                $result = true;
+            }
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
+        }
+        return $result;
+    }
+
+
     public
     function execute(\Magento\Framework\Event\Observer $observer)
     {
+//        dd($observer);
         $currentCustomer = $this->_customerSession->isLoggedIn();
         if ($currentCustomer) {
             $orderID = $observer->getData('order')->getIncrementId();
             $customerID = $observer->getData('order')->getCustomerId();
+
+            $quoteId = $observer->getData('order')->getQuoteId();
+            $discountAmount = $observer->getData('order')->getDiscountAmount();
+            $this->checkCodeOfMeOrNotAndUpdateAmountUsed($quoteId, $discountAmount);
+
+//            dd($quoteId);
+
             $create_from = $orderID;
             $amount_used = 0;
             $allAttributeProductOrdered = $observer->getData('order')->getAllVisibleItems();
@@ -104,7 +153,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
                                 $modelGiftCardHistory->addData($dataGiftCardHistory);
                                 $modelGiftCardHistory->save();
                             } catch (\Exception $e) {
-                                return $e . getMessage();
+                                return $e->getMessage();
                             }
                         }
                     }
