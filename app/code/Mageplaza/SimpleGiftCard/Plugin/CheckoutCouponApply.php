@@ -21,10 +21,10 @@ class CheckoutCouponApply
         if (!$valueCouponCodeQuote) {
             $quoteID = $coupon->getQuote()->getId();
             $modelQuote = $this->_quoteFactory->create()->load($quoteID);
-            $couponCode = $modelQuote->getCouponCode();
+            $couponCode = $modelQuote->getCouponCodeCustom();
             return $couponCode;
         }
+//        dd($valueCouponCodeQuote);
         return $valueCouponCodeQuote;
     }
 }
-

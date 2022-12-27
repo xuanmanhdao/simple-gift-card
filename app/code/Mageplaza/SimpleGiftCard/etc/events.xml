@@ -6,4 +6,7 @@
     <event name="controller_action_predispatch_checkout_cart_couponPost">
         <observer name="mageplaza_simplegiftcard_handler_custom-coupon-apply" instance="Mageplaza\SimpleGiftCard\Observer\HandlerCustomCouponApply" />
     </event>
+    <event name="controller_action_predispatch_checkout_cart_index">
+        <observer name="checkout_page" instance="Mageplaza\SimpleGiftCard\Observer\CheckShoppingCartObserver" />
+    </event>
 </config>

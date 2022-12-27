@@ -16,6 +16,8 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
 
 //    protected $_quoteFactory;
 
+//    protected $_cart;
+
     /**
      * Custom constructor.
      * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
@@ -23,10 +25,12 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
     public function __construct(
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         \Mageplaza\SimpleGiftCard\Model\GiftCardFactory   $giftCardFactory,
+//        \Magento\Checkout\Controller\Cart                 $cart
     )
     {
         $this->_priceCurrency = $priceCurrency;
         $this->_giftCardFactory = $giftCardFactory;
+//        $this->_cart = $cart;
     }
 
     /**
@@ -64,6 +68,8 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
             $total->setData('coupon_code_custom', -$discountAmount);
 
             $total->addTotalAmount('customdiscount', -$discountAmount);
+
+
             $total->addBaseTotalAmount('customdiscount', -$baseDiscountAmountApply);
             $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
             $quote->setCustomDiscount(-$discountAmount);
@@ -73,19 +79,15 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
             /*//            Dua vao core magento
                         $amountEnabling = $giftCard->getBalance() - $giftCard->getAmountUsed();
                         $baseDiscountAmountApply = (($total->getSubtotal() - $amountEnabling) < 0) ? $total->getSubtotal() : $amountEnabling;
-
                         $discountAmount = $this->_priceCurrency->convert($baseDiscountAmountApply);
-
                         $subTotalWithDiscount = $total->getSubtotal() - $discountAmount;
                         $baseSubTotalWithDiscount = $total->getBaseSubtotal() - $baseDiscountAmountApply;
-
                         $label = 'Coupon Code Custom';
                         $total->setDiscountDescription($label);
                         $total->setDiscountAmount($discountAmount);
                         $total->setBaseDiscountAmount($baseDiscountAmountApply);
                         $total->setSubtotalWithDiscount(($subTotalWithDiscount < 0) ? 0 : $subTotalWithDiscount);
                         $total->setBaseSubtotalWithDiscount(($baseSubTotalWithDiscount < 0) ? 0 : $baseSubTotalWithDiscount);
-
                         $total->setTotalAmount('discount', -$discountAmount);
                         $total->setBaseTotalAmount('discount', -$baseDiscountAmountApply);
                         $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
@@ -97,13 +99,19 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
     public function fetch(\Magento\Quote\Model\Quote $quote, \Magento\Quote\Model\Quote\Address\Total $total)
     {
         $result = null;
+
         $amount = $total->getData('coupon_code_custom');
-//        dd($amount);
+//        dd($this->_cart);
+
+//        $baseSubTotal = $quote->getBaseSubtotal();
+//        $grandTotal = $quote->getGrandTotal();
+//        $amount = $baseSubTotal - $grandTotal;
+//        dd($quote);
         if ($amount != 0) {
             $description = $total->getDiscountDescription();
             $result = [
-                'code' => "mageplaza_coupon_code_custom",
-                'title' => strlen($description) ? __('Discount (%1)', $description) : __('Discount'),
+                'code' => 'mageplaza_coupon_code_custom',
+                'title' => $description && strlen($description) ? __('Discount (%1)', $description) : __('Discount'),
                 'value' => $amount
             ];
         }

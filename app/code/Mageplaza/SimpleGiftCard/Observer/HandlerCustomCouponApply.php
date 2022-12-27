@@ -76,11 +76,13 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
         }
 
         $quote = $this->_checkoutSession->getQuote();
-        $quote->setCouponCodeCustom($valueCodeCustomerApply);
+//        $quote->setCouponCodeCustom($valueCodeCustomerApply);
+        $quote->collectTotals()->setCouponCodeCustom($valueCodeCustomerApply)->save();
 
         if ($this->checkIsCodeCustomOrNot($valueCodeCustomerApply)) {
             if (!$this->checkCodeCustomEnableOrNot($valueCodeCustomerApply)) {
-                $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
+//                $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
+                $quote->collectTotals()->setCouponCodeCustom($valueCodeCustomerApply)->save();
                 $this->_messageManager->addErrorMessage("You used coupon code $valueCodeCustomerApply! The value of the code is now 0, please enter a another code.");
                 $controllerAction->getResponse()->setRedirect($this->_redirect->getRefererUrl());
                 $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
@@ -88,10 +90,10 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
                 return $this;
             }
             try {
-                $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
+//                $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
+                $quote->collectTotals()->setCouponCodeCustom($valueCodeCustomerApply)->save();
                 $this->_messageManager->addSuccessMessage("You used coupon code $valueCodeCustomerApply");
                 $controllerAction->getResponse()->setRedirect($this->_redirect->getRefererUrl());
-//                $this->_actionFlag->set('', \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
                 $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
                 $this->_redirect->redirect($controllerAction->getResponse(), $this->_redirect->getRefererUrl());
                 return $this;
@@ -114,47 +116,33 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
                $total = $quote->getBaseSubtotal();
                $quote->setSubtotal(0);
                $quote->setBaseSubtotal(0);
-
                $quote->setSubtotalWithDiscount(0);
                $quote->setBaseSubtotalWithDiscount(0);
-
                $quote->setGrandTotal(0);
                $quote->setBaseGrandTotal(0);
-
-
                $canAddItems = $quote->isVirtual() ? ('billing') : ('shipping');
                foreach ($quote->getAllAddresses() as $address) {
-
                    $address->setSubtotal(0);
                    $address->setBaseSubtotal(0);
-
                    $address->setGrandTotal(0);
                    $address->setBaseGrandTotal(0);
-
                    $address->collectTotals();
-
                    $quote->setSubtotal((float)$quote->getSubtotal() + $address->getSubtotal());
                    $quote->setBaseSubtotal((float)$quote->getBaseSubtotal() + $address->getBaseSubtotal());
-
                    $quote->setSubtotalWithDiscount(
                        (float)$quote->getSubtotalWithDiscount() + $address->getSubtotalWithDiscount()
                    );
                    $quote->setBaseSubtotalWithDiscount(
                        (float)$quote->getBaseSubtotalWithDiscount() + $address->getBaseSubtotalWithDiscount()
                    );
-
                    $quote->setGrandTotal((float)$quote->getGrandTotal() + $address->getGrandTotal());
                    $quote->setBaseGrandTotal((float)$quote->getBaseGrandTotal() + $address->getBaseGrandTotal());
-
                    $quote->save();
-
                    $quote->setGrandTotal($quote->getBaseSubtotal() - $discountAmount)
                        ->setBaseGrandTotal($quote->getBaseSubtotal() - $discountAmount)
                        ->setSubtotalWithDiscount($quote->getBaseSubtotal() - $discountAmount)
                        ->setBaseSubtotalWithDiscount($quote->getBaseSubtotal() - $discountAmount)
                        ->save();
-
-
                    if ($address->getAddressType() == $canAddItems) {
                        //echo $address->setDiscountAmount; exit;
                        $address->setSubtotalWithDiscount((float)$address->getSubtotalWithDiscount() - $discountAmount);
@@ -174,7 +162,6 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
                    }//end: if
                } //end: foreach
                //echo $quote->getGrandTotal();
-
                foreach ($quote->getAllItems() as $item) {
                    //We apply discount amount based on the ratio between the GrandTotal and the RowTotal
                    $rat = $item->getPriceInclTax() / $total;
