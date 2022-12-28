@@ -26,37 +26,9 @@
 "var order_data.customer_name":"Customer Name"
 } @-->
 
-{{template config_path="design/email/header_template"}}
 <style>
     .giftcard-heading {
         padding-top: 30px;
-    }
-
-    .action-container {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        margin-bottom: 100px;
-    }
-
-    .form-container {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .font-weight-bold {
-        font-weight: bold;
-    }
-
-    .btn-primary {
-        background: #1979c3;
-        border: 1px solid #1979c3;
-        color: #ffffff;
-        font-weight: 600;
-        padding: 7px 15px;
-        font-size: 1.4rem;
-        box-sizing: border-box;
-        vertical-align: middle;
     }
 
     .giftcard-table-caption {
@@ -80,44 +52,38 @@
         background-color: #D6EEEE;
     }
 </style>
-<table border="1">
-    <tr class="email-summary">
-        <td>
-            <h1>{{trans "Your Order #%increment_id" increment_id=$incrementId}}
-            </h1>
-            <p>{{trans "Placed on %created_at" created_at=$createdAt}}</p>
-        </td>
-    </tr>
-    <tr class="email-information">
-        <td>
-            <table class="order-details">
-                <h3>{{trans "Info Gift Card Order"}}</h3>
-                <tr>
-                    <th>
-                        <p>{{trans "Name gift card"}}</p>
-                    </th>
-                    <th>
-                        <p>{{trans "Price gift card"}}</p>
-                    </th>
-                    <th>
-                        <p>{{trans "Value gift card"}}</p>
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        <span> {{trans '%name_gift_card' name_gift_card=$nameGiftCard}}</span>
-                    </td>
-                    <td>
-                        <span>{{trans '%price_gift_card' price_gift_card=$priceGiftCard}}</span>
-                    </td>
-                    <td>
-                        <span>{{trans '%value_gift_card' value_gift_card=$valueGiftCard}}</span>
-                    </td>
-                </tr>
-            </table>
-            {{layout handle="sales_email_order_items" order_id=$order_id area="frontend"}}
-        </td>
-    </tr>
-</table>
 
+{{template config_path="design/email/header_template"}}
+<h2 class="giftcard-heading">{{trans "Your Order #%increment_id" increment_id=$incrementId}}</h2>
+<div class="table-container">
+    <p class="giftcard-table-caption">{{trans "Placed on %created_at" created_at=$createdAt}}</p>
+    <table id="giftcard-table">
+        <thead>
+        <tr>
+            <th>
+                {{trans "Name gift card"}}
+            </th>
+            <th>
+                {{trans "Price gift card"}}
+            </th>
+            <th>
+                {{trans "Value gift card"}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="col title">
+                {{trans '%name_gift_card' name_gift_card=$nameGiftCard}}
+            </td>
+            <td class="col title">
+                {{trans '%price_gift_card' price_gift_card=$priceGiftCard}}
+            </td>
+            <td class="col title">
+                {{trans '%value_gift_card' value_gift_card=$valueGiftCard}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 {{template config_path="design/email/footer_template"}}
