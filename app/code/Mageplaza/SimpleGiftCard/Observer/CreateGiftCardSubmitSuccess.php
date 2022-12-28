@@ -18,6 +18,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
     protected $_productFactory;
 
 //    protected $_checkoutSession;
+    private $_helperEmail;
 
     protected $_quoteFactory;
 
@@ -30,6 +31,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
         \Magento\Catalog\Model\ProductFactory                  $productFactory,
 //        \Magento\Checkout\Model\Session                        $checkoutSession,
         \Magento\Quote\Model\QuoteFactory                      $quoteFactory,
+        \Mageplaza\SimpleGiftCard\Helper\Email                 $helperEmail,
 
     )
     {
@@ -41,6 +43,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
         $this->_productFactory = $productFactory;
 //        $this->_checkoutSession = $checkoutSession;
         $this->_quoteFactory = $quoteFactory;
+        $this->_helperEmail = $helperEmail;
     }
 
     public function createCodeGiftCard()
@@ -96,6 +99,7 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
     public
     function execute(\Magento\Framework\Event\Observer $observer)
     {
+
 //        dd($observer);
         $currentCustomer = $this->_customerSession->isLoggedIn();
         if ($currentCustomer) {
@@ -104,25 +108,27 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
 
             $quoteId = $observer->getData('order')->getQuoteId();
             $discountAmount = $observer->getData('order')->getDiscountAmount();
-            $this->checkCodeOfMeOrNotAndUpdateAmountUsed($quoteId, $discountAmount);
 
-//            dd($quoteId);
+//            Update gift card and create gift card history
+            $this->checkCodeOfMeOrNotAndUpdateAmountUsed($quoteId, $discountAmount);
+            ///
+
+
+            $this->_helperEmail->sendEmail();
 
             $create_from = $orderID;
             $amount_used = 0;
             $allAttributeProductOrdered = $observer->getData('order')->getAllVisibleItems();
+//            $array=[];
+//            array_push($arrayTest, $isVirtual);
             foreach ($allAttributeProductOrdered as $item) {
                 $isVirtual = $item->getIsVirtual();
 
                 if ($isVirtual == 1) {
-//                    $productId = $item->getProductId();
-//                    $product = $this->_productFactory->create()->load($productId);
-//                    $giftCardAmount = $product->getData('gift_card_amount');
-
                     $product = $item->getProduct();
                     $giftCardAmount = $product->getData('gift_card_amount');
 
-                    if ($giftCardAmount) {
+                    if ($giftCardAmount>0) {
                         $balance = $giftCardAmount;
                         $quantityOrdered = $item->getQtyordered();
                         for ($i = 0; $i < $quantityOrdered; $i++) {

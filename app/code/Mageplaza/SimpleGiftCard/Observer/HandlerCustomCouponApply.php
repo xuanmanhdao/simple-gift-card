@@ -77,12 +77,14 @@ class HandlerCustomCouponApply implements \Magento\Framework\Event\ObserverInter
 
         $quote = $this->_checkoutSession->getQuote();
 //        $quote->setCouponCodeCustom($valueCodeCustomerApply);
+//        $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
+
         $quote->collectTotals()->setCouponCodeCustom($valueCodeCustomerApply)->save();
 
         if ($this->checkIsCodeCustomOrNot($valueCodeCustomerApply)) {
             if (!$this->checkCodeCustomEnableOrNot($valueCodeCustomerApply)) {
 //                $quote->collectTotals()->setCouponCode($valueCodeCustomerApply)->save();
-                $quote->collectTotals()->setCouponCodeCustom($valueCodeCustomerApply)->save();
+//                $quote->collectTotals()->setCouponCodeCustom($valueCodeCustomerApply)->save();
                 $this->_messageManager->addErrorMessage("You used coupon code $valueCodeCustomerApply! The value of the code is now 0, please enter a another code.");
                 $controllerAction->getResponse()->setRedirect($this->_redirect->getRefererUrl());
                 $this->_actionFlag->set($currentActionName, \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
