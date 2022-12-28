@@ -114,22 +114,42 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
             ///
 
 
-            $this->_helperEmail->sendEmail();
-
             $create_from = $orderID;
             $amount_used = 0;
             $allAttributeProductOrdered = $observer->getData('order')->getAllVisibleItems();
-//            $array=[];
+
+            $orderGiftCardID = '';
+            $createAt = '';
+            $arrayGiftCardName = [];
+            $arrayGiftCardCode = [];
+            $arrayGiftCardPrice = [];
+            $arrayGiftCardBalance = [];
+
+
+            $isVirtualFlag = false;
+            $isGiftCardCustomFlag = false;
 //            array_push($arrayTest, $isVirtual);
             foreach ($allAttributeProductOrdered as $item) {
                 $isVirtual = $item->getIsVirtual();
-
+//                dd($item->getOrderId());
                 if ($isVirtual == 1) {
+                    $isVirtualFlag = true;
+
                     $product = $item->getProduct();
                     $giftCardAmount = $product->getData('gift_card_amount');
 
-                    if ($giftCardAmount>0) {
+                    if ($giftCardAmount > 0) {
+                        $isGiftCardCustomFlag = true;
+
+                        $orderGiftCardID = $item->getOrderId();
+                        $createAt = $item->getCreatedAt();
                         $balance = $giftCardAmount;
+
+
+//                        $arrayGiftCardName[] = $giftCardName;
+//                        $arrayGiftCardPrice[] = $giftCardPrice;
+//                        $arrayGiftCardBalance[] = $balance;
+
                         $quantityOrdered = $item->getQtyordered();
                         for ($i = 0; $i < $quantityOrdered; $i++) {
                             try {
@@ -158,6 +178,14 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
                                 ];
                                 $modelGiftCardHistory->addData($dataGiftCardHistory);
                                 $modelGiftCardHistory->save();
+
+                                $giftCardName = $item->getName();
+                                $giftCardPrice = $product->getData('price');
+
+                                array_push($arrayGiftCardName, $giftCardName);
+                                array_push($arrayGiftCardCode, $codeGiftCard);
+                                array_push($arrayGiftCardPrice, $giftCardPrice);
+                                array_push($arrayGiftCardBalance, $balance);
                             } catch (\Exception $e) {
                                 return $e->getMessage();
                             }
@@ -165,7 +193,10 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
                     }
 
                 }
+            }
 
+            if ($isVirtualFlag && $isGiftCardCustomFlag) {
+                $this->_helperEmail->sendEmail($orderGiftCardID, $createAt, $arrayGiftCardName, $arrayGiftCardCode, $arrayGiftCardPrice, $arrayGiftCardBalance);
             }
             return $this;
         }

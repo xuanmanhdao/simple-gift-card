@@ -52,38 +52,52 @@
         background-color: #D6EEEE;
     }
 </style>
+<!--<script type="text/javascript">-->
+<!--    document.getElementById('test321').innerHTML = 'greeting';-->
+<!--</script>-->
 
 {{template config_path="design/email/header_template"}}
-<h2 class="giftcard-heading">{{trans "Your Order #%increment_id" increment_id=$incrementId}}</h2>
+<h2 class="giftcard-heading">{{trans "Your Order #%order_id" order_id=$orderId}}</h2>
 <div class="table-container">
     <p class="giftcard-table-caption">{{trans "Placed on %created_at" created_at=$createdAt}}</p>
     <table id="giftcard-table">
         <thead>
         <tr>
             <th>
-                {{trans "Name gift card"}}
+                {{trans "Name Gift Card"}}
             </th>
             <th>
-                {{trans "Price gift card"}}
+                {{trans "Code Gift Card"}}
             </th>
             <th>
-                {{trans "Value gift card"}}
+                {{trans "Price Gift Card"}}
             </th>
+            <th>
+                {{trans "Value Gift Card"}}
+            </th>
+
         </tr>
         </thead>
         <tbody>
         <tr>
             <td class="col title">
-                {{trans '%name_gift_card' name_gift_card=$nameGiftCard}}
+                <!--                {{trans '%name_gift_card' name_gift_card=$nameGiftCard|raw}}-->
+                {{var nameGiftCard|raw}}
             </td>
             <td class="col title">
-                {{trans '%price_gift_card' price_gift_card=$priceGiftCard}}
+                {{var codeGiftCard|raw}}
             </td>
             <td class="col title">
-                {{trans '%value_gift_card' value_gift_card=$valueGiftCard}}
+                <!--                {{trans '%price_gift_card' price_gift_card=$priceGiftCard|raw}}-->
+                {{var priceGiftCard|raw}}
+            </td>
+            <td class="col title" id="test321">
+                <!--                {{trans '%value_gift_card' value_gift_card=$valueGiftCard|raw}}-->
+                {{var valueGiftCard|raw}}
             </td>
         </tr>
         </tbody>
     </table>
 </div>
 {{template config_path="design/email/footer_template"}}
+

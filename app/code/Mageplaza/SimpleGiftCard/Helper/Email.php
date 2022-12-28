@@ -29,7 +29,7 @@ class Email extends AbstractHelper
         parent::__construct($context);
     }
 
-    public function sendEmail()
+    public function sendEmail($orderId, $createdAt, $nameGiftCard, $codeGiftCard, $priceGiftCard, $valueGiftCard)
     {
         $templateId = 'newsletter_order_success_confirm_custom_email_template'; // template id
         $fromEmail = 'owner@domain.com';  // sender Email id
@@ -37,14 +37,15 @@ class Email extends AbstractHelper
         $toEmail = 'customer@email.com'; // receiver email id
 
         try {
+//            $giftCode = ['VFDFRVXSW43VF', 'FFRFRFVSW43VF', 'VFDFGFGFXSW43VF'];
             // template variables pass here
             $templateVars = [
-                'incrementId' => 'test',
-                'createdAt' => 'test1',
-                'emailCustomerNote' => 'test2',
-                'valueGiftCard'=>'test3',
-                'priceGiftCard'=>'test4',
-                'nameGiftCard'=>'test5'
+                'orderId' => $orderId,
+                'createdAt' => $createdAt,
+                'nameGiftCard' => implode("<br>", $nameGiftCard),
+                'codeGiftCard' => implode("<br>", $codeGiftCard),
+                'priceGiftCard' => implode("<br>", $priceGiftCard),
+                'valueGiftCard' => implode("<br>", $valueGiftCard)
             ];
 
             $storeId = $this->storeManager->getStore()->getId();
