@@ -68,11 +68,15 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
             $total->setData('coupon_code_custom', -$discountAmount);
 
             $total->addTotalAmount('customdiscount', -$discountAmount);
-
-
             $total->addBaseTotalAmount('customdiscount', -$baseDiscountAmountApply);
-            $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
+
+//            $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscountAmountApply);
+            $total->setBaseGrandTotal($total->getBaseSubtotal() - $baseDiscountAmountApply);
+
+//            dd($total);
             $quote->setCustomDiscount(-$discountAmount);
+//            $quote->setBaseGrandTotal($total->getBaseGrandTotal());
+//            dd($quote);
             return $this;
 
 

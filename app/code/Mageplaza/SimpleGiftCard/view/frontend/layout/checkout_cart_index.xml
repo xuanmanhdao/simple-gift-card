@@ -11,10 +11,12 @@
 
                                 <item name="custom_discount" xsi:type="array">
                                     <item name="component" xsi:type="string">
-                                        Mageplaza_SimpleGiftCard/js/view/checkout/summary/customdiscount
+<!--                                        Mageplaza_SimpleGiftCard/js/view/checkout/summary/customdiscount-->
+                                        Mageplaza_SimpleGiftCard/js/view/checkout/cart/totals/customdiscount
                                     </item>
                                     <item name="sortOrder" xsi:type="string">20</item>
                                     <item name="config" xsi:type="array">
+                                        <item name="template" xsi:type="string">Mageplaza_SimpleGiftCard/checkout/cart/totals/customdiscount</item>
                                         <item name="custom_discount" xsi:type="string" translate="true">Gift Card Custom
                                         </item>
                                     </item>
