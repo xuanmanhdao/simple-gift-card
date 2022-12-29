@@ -64,16 +64,15 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
         return $randomString;
     }
 
-    public function checkCodeOfMeOrNotAndUpdateAmountUsed($quoteID, $discountAmount): bool
+    public function checkCodeOfMeOrNotAndUpdateAmountUsed($quoteID, $discountAmount)
     {
-        $result = false;
         try {
             $modelQuote = $this->_quoteFactory->create()->load($quoteID);
             $valueCouponCodeCustom = $modelQuote->getCouponCodeCustom();
             $giftCard = $this->_giftCardFactory->create()->load($valueCouponCodeCustom, 'code');
             if ($giftCard->getId()) {
 //                $giftCard->setData('amount_used',$discountAmount)->save();
-                $giftCard->setAmountUsed(-$discountAmount)->save();
+                $giftCard->setAmountUsed($discountAmount)->save();
 
                 $currentCustomerId = $this->_customerSession->getCustomer()->getId();
                 $action = "Used for order";
@@ -87,12 +86,10 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
                 ];
                 $modelGiftCardHistory->addData($dataGiftCardHistory);
                 $modelGiftCardHistory->save();
-                $result = true;
             }
         } catch (\Exception $exception) {
             return $exception->getMessage();
         }
-        return $result;
     }
 
 
@@ -109,10 +106,12 @@ class CreateGiftCardSubmitSuccess implements \Magento\Framework\Event\ObserverIn
             $quoteId = $observer->getData('order')->getQuoteId();
             $discountAmount = $observer->getData('order')->getDiscountAmount();
 
-//            Update gift card and create gift card history
-            $this->checkCodeOfMeOrNotAndUpdateAmountUsed($quoteId, $discountAmount);
-            ///
-
+            if ($discountAmount == 0) {
+                //            Update gift card and create gift card history
+                $discountAmountGiftCardCustom = $observer->getData('order')->getSubtotal() - $observer->getData('order')->getGrandTotal();
+                $this->checkCodeOfMeOrNotAndUpdateAmountUsed($quoteId, $discountAmountGiftCardCustom);
+                ///
+            }
 
             $create_from = $orderID;
             $amount_used = 0;
