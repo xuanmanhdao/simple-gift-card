@@ -30,6 +30,9 @@ define(
                 }
                 return true;
             },
+            getHTML: function () {
+                return '<h2>Hello1</h2>';
+            }
         });
     }
 );

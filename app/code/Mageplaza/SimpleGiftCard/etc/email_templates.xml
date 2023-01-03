@@ -3,4 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
     <template id="newsletter_order_success_confirm_custom_email_template" label="Order Success Confirmation Custom"
               file="order_success_confirm_custom.html" type="html" module="Mageplaza_SimpleGiftCard" area="frontend"/>
+
+    <template id="template_email_list" label="Default Email template" file="default_emailtemplate.html"
+              type="html" module="Mageplaza_SimpleGiftCard" area="frontend"/>
 </config>

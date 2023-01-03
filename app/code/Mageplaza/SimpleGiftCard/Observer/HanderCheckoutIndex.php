@@ -17,8 +17,8 @@ class HanderCheckoutIndex implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(Observer $observer)
     {
-//        $quote = $this->_checkoutSession->getQuote();
-//        $quote->collectTotals();
+        $quote = $this->_checkoutSession->getQuote();
+        $quote->collectTotals();
 //        dd($quote);
     }
 }

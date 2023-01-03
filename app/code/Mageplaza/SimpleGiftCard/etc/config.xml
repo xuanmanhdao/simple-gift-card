@@ -11,5 +11,11 @@
                 <code_length>12</code_length>
             </code>
         </gift_card>
+
+        <template>
+            <email>
+                <list>template_email_list</list>
+            </email>
+        </template>
     </default>
 </config>

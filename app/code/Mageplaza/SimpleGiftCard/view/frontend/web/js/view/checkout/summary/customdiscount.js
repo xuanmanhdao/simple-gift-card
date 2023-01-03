@@ -11,6 +11,7 @@ define(
             defaults: {
                 template: 'Mageplaza_SimpleGiftCard/checkout/summary/customdiscount'
             },
+            // Summary xyz
             getFormattedPrice: function (price) {
                 return priceUtils.formatPrice(price, quote.getPriceFormat());
             },
@@ -26,7 +27,8 @@ define(
             },
             isDisplayedCustomdiscount: function () {
                 if (this.getCustomDiscount() === this.getFormattedPrice(0)) {
-                    return false;
+                    // return false;
+                    return true;
                 }
                 return true;
             },
